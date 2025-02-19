@@ -12,6 +12,7 @@ from dict_file import mapping_dict
 from fastapi import HTTPException
 from spire.doc import *
 from spire.doc.common import *
+from sample_json import json_template_str
 
 
 
@@ -21,11 +22,11 @@ load_dotenv()
  
 async def cv_json(file_path):
  
-    # Load JSON template
-    json_template_path = r"D:\OneDrive - MariApps Marine Solutions Pte.Ltd\liju_resume_parser/output_json.json"
-    with open(json_template_path, "r", encoding="utf-8") as file:
-        json_template_str = json.load(file)
- 
+    # # Load JSON template
+    # json_template_path = r"D:\OneDrive - MariApps Marine Solutions Pte.Ltd\liju_resume_parser/output_json.json"
+    # with open(json_template_path, "r", encoding="utf-8") as file:
+    #     json_template_str = json.load(file)
+    
     # Optimized Prompt
     prompt = f"""
     You are an expert in data extraction and JSON formatting. Your task is to extract and format resume data **exactly** as per the provided JSON template `{json_template_str}`. Ensure strict compliance with structure, accuracy, and completeness. Follow these rules carefully:

@@ -13,6 +13,9 @@ from fastapi import HTTPException
 from spire.doc import *
 from spire.doc.common import *
 # from sample_json import json_template_str
+<<<<<<< HEAD
+from docx2pdf import convert
+=======
 
 from spire.doc import Document
 
@@ -23,10 +26,9 @@ if os.path.exists(font_path):
     Document.SetGlobalFontPaths(font_path)
 else:
     print(f"❌ Warning: Font directory '{font_path}' not found. Skipping font path setting.")
+>>>>>>> 6ec325a9a11603fbaedb5c231f7e681fe720c6fb
 
 load_dotenv()
- 
- 
  
 async def cv_json(file_path):
  
@@ -89,10 +91,7 @@ async def cv_json(file_path):
         print("converted the pdf to images")
         return images
  
-    # Encode images in parallel (faster base64 conversion)
-    # def encode_image(image_path):
-    #     with open(image_path, "rb") as image_file:
-    #         return base64.b64encode(image_file.read()).decode("utf-8")
+
  
     # Send API requests asynchronously for speed
     async def send_openai_request(session, batch):
@@ -128,94 +127,42 @@ async def cv_json(file_path):
         except Exception as e:
             print(f"API Request Error: {e}")
             return None
- 
-    # Asynchronous Processing of API Calls
-    # Process images and send requests in batches
-    # async def process_images(file_path):
-    #     base64_images = convert_pdf_to_images(file_path)
-    #     batch_size = 3  # Process in smaller batches
-    #     tasks = []
-
-    #     async with aiohttp.ClientSession() as session:
-    #         for i in range(0, len(base64_images), batch_size):
-    #             batch = base64_images[i:i + batch_size]
-    #             tasks.append(send_openai_request(session, batch))
-
-    #         responses = await asyncio.gather(*tasks)
-
-    #     # Filter out failed responses
-    #     json_outputs = [resp for resp in responses if resp]
-    #     return json_outputs[0] if json_outputs else None
-
-    # # Run async processing
-    # return await process_images(file_path)
 
 
+    def doc_to_images(file_path):
+        # document = Document()
+        # document.LoadFromFile(file_path)
+        # images = []
+        # for i in range(document.GetPageCount()):
+        #     # Convert a specific page to bitmap image
+        #     imageStream = document.SaveImageToStreams(i, ImageType.Bitmap)
 
-
-
-    # orginal code
-    # async def process_images(file_path):
-    #         print("processing images")
-    #         base64_images = convert_pdf_to_images(file_path)
-
-    #         async with aiohttp.ClientSession() as session:
-    #             # Send ALL images in one request (preferred if within token limits)
-    #             response = await send_openai_request(session, base64_images)
-    #             return response
-
-    # return await process_images(file_path)
-
-
-    # async def process_images(file_path):
-    #         print("processing images")
-    #         base64_images = convert_pdf_to_images(file_path)
-
-    #         async with aiohttp.ClientSession() as session:
-    #             # Send ALL images in one request (preferred if within token limits)
-    #             response = await send_openai_request(session, base64_images)
-
-    #             def replace_values(data, mapping):
-    #                 if isinstance(data, dict):
-    #                     return {key: replace_values(value, mapping) for key, value in data.items()}
-    #                 elif isinstance(data, list):
-    #                     return [replace_values(item, mapping) for item in data]
-    #                 elif isinstance(data, str):
-    #                     return mapping.get(data, data)  # Replace if found, else keep original
-    #                 return data
-
-
-    #             updated_json = replace_values(response, mapping_dict)
-
-
-    #             return updated_json
-
-    # return await process_images(file_path)
-
-
-    def doc_to_images(file_path, output_folder = r"D:\OneDrive - MariApps Marine Solutions Pte.Ltd\liju_resume_parser"):
-        document = Document()
-        document.LoadFromFile(file_path)
-        images = []
-        for i in range(document.GetPageCount()):
-            # Convert a specific page to bitmap image
-            imageStream = document.SaveImageToStreams(i, ImageType.Bitmap)
-
-            image_path = os.path.join(output_folder, f"page_{i+1}.jpg")
+        #     image_path = os.path.join(output_folder, f"page_{i+1}.jpg")
         
-            # Save image file
-            with open(image_path, "wb") as imageFile:
-                imageFile.write(imageStream.ToArray())
+        #     # Save image file
+        #     with open(image_path, "wb") as imageFile:
+        #         imageFile.write(imageStream.ToArray())
 
 
-            img_bytes = imageStream.ToArray()
+        #     img_bytes = imageStream.ToArray()
 
-            # Encode to base64
-            img_base64 = base64.b64encode(img_bytes).decode("utf-8")
-            images.append(img_base64)
-        document.Close()
-        print("converted the word to images")
-        return images
+        #     # Encode to base64
+        #     img_base64 = base64.b64encode(img_bytes).decode("utf-8")
+        #     images.append(img_base64)
+        # document.Close()
+        # print("converted the word to images")
+        # return images
+        try:
+            import tempfile
+            with tempfile.TemporaryDirectory() as temp_dir:
+                pdf_file_path = os.path.join(temp_dir, "temp.pdf")
+                convert(file_path, pdf_file_path)
+                print("converted doc to pdf")
+                images = convert_pdf_to_images(file_path)
+                print("converted word to images")
+                return images
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"DOCX to PDF conversion failed: {str(e)}")
 
     async def process_images(file_path):
             print("processing images")

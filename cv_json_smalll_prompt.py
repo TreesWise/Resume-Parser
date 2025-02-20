@@ -117,21 +117,41 @@ async def cv_json(file_path):
             return None
 
 
-    def convert_docx_to_pdf(docx_path):
-        """ Converts DOCX to PDF using LibreOffice CLI. """
-        pdf_path = docx_path.replace(".docx", ".pdf")
-        
-        try:
-            # Run LibreOffice in headless mode to convert DOCX to PDF
+    import subprocess
+import os
+import platform
+
+def convert_docx_to_pdf(docx_path):
+    """ Converts DOCX to PDF using LibreOffice (Linux) or Microsoft Word (Windows). """
+    pdf_path = docx_path.replace(".docx", ".pdf")
+
+    try:
+        if platform.system() == "Windows":
+            # Windows: Use Microsoft Word (win32com) for conversion
+            import win32com.client
+            word = win32com.client.Dispatch("Word.Application")
+            doc = word.Documents.Open(os.path.abspath(docx_path))
+            doc.SaveAs(os.path.abspath(pdf_path), FileFormat=17)  # PDF format
+            doc.Close()
+            word.Quit()
+            print(f" Converted {docx_path} to {pdf_path} using Microsoft Word")
+        else:
+            # Linux: Use full LibreOffice path
+            libreoffice_path = "/usr/bin/libreoffice"  # Explicit path
+            if not os.path.exists(libreoffice_path):
+                raise FileNotFoundError(f"LibreOffice not found at {libreoffice_path}")
+
             subprocess.run(
-                ["libreoffice", "--headless", "--convert-to", "pdf", "--outdir", os.path.dirname(docx_path), docx_path],
+                [libreoffice_path, "--headless", "--convert-to", "pdf", "--outdir", os.path.dirname(docx_path), docx_path],
                 check=True
             )
-            print(f" Successfully converted {docx_path} to {pdf_path}")
-            return pdf_path
-        except subprocess.CalledProcessError as e:
-            print(f" DOCX to PDF conversion failed: {e}")
-            return None
+            print(f" Converted {docx_path} to {pdf_path} using LibreOffice")
+
+        return pdf_path
+    except Exception as e:
+        print(f" DOCX to PDF conversion failed: {e}")
+        raise HTTPException(status_code=500, detail=f"DOCX to PDF conversion failed: {e}")
+
 
     def doc_to_images(file_path):
         """ Converts DOCX to PDF and then to images. """

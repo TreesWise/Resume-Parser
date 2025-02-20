@@ -14,7 +14,10 @@ from spire.doc import *
 from spire.doc.common import *
 # from sample_json import json_template_str
 
+from spire.doc import Document
 
+# Set global font path for Spire.Doc
+Document.SetGlobalFontPaths("/usr/share/fonts")
 
 
 load_dotenv()

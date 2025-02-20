@@ -31,16 +31,6 @@ jobs:
       
       - name: Install dependencies
         run: pip install -r requirements.txt
-
-
-      # Install required system fonts before deployment
-      
-      - name: Install system fonts
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y fontconfig fonts-dejavu fonts-liberation
-          fc-cache -fv  # Rebuild font cache
-          fc-list :family  # List available fonts (This should now work)
         
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
 
@@ -78,4 +68,4 @@ jobs:
         with:
           app-name: 'Resume-Parser'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_576EC629EF414C1FB95966EA6EC1AE38 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_56FAB915898D42819EB631B1733365CE }}

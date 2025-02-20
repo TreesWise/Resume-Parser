@@ -11,6 +11,7 @@ from dict_file import mapping_dict
 from fastapi import HTTPException
 import subprocess
 import platform
+import aiofiles
 
 load_dotenv()
 

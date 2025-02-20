@@ -10,13 +10,11 @@ from openai import OpenAI
 from io import BytesIO
 from dict_file import mapping_dict
 from fastapi import HTTPException
+import subprocess
 # from spire.doc import *
 # from spire.doc.common import *
-from docx2pdf import convert
 # from sample_json import json_template_str
-
-
-
+# from docx2pdf import convert
 
 load_dotenv()
  
@@ -119,40 +117,35 @@ async def cv_json(file_path):
             return None
 
 
-    def doc_to_images(file_path):
-        # document = Document()
-        # document.LoadFromFile(file_path)
-        # images = []
-        # for i in range(document.GetPageCount()):
-        #     # Convert a specific page to bitmap image
-        #     imageStream = document.SaveImageToStreams(i, ImageType.Bitmap)
-
-        #     image_path = os.path.join(output_folder, f"page_{i+1}.jpg")
+    def convert_docx_to_pdf(docx_path):
+        """ Converts DOCX to PDF using LibreOffice CLI. """
+        pdf_path = docx_path.replace(".docx", ".pdf")
         
-        #     # Save image file
-        #     with open(image_path, "wb") as imageFile:
-        #         imageFile.write(imageStream.ToArray())
-
-
-        #     img_bytes = imageStream.ToArray()
-
-        #     # Encode to base64
-        #     img_base64 = base64.b64encode(img_bytes).decode("utf-8")
-        #     images.append(img_base64)
-        # document.Close()
-        # print("converted the word to images")
-        # return images
         try:
-            import tempfile
-            with tempfile.TemporaryDirectory() as temp_dir:
-                pdf_file_path = os.path.join(temp_dir, "temp.pdf")
-                convert(file_path, pdf_file_path)
-                print("converted doc to pdf")
-                images = convert_pdf_to_images(file_path)
-                print("converted word to images")
-                return images
+            # Run LibreOffice in headless mode to convert DOCX to PDF
+            subprocess.run(
+                ["libreoffice", "--headless", "--convert-to", "pdf", "--outdir", os.path.dirname(docx_path), docx_path],
+                check=True
+            )
+            print(f" Successfully converted {docx_path} to {pdf_path}")
+            return pdf_path
+        except subprocess.CalledProcessError as e:
+            print(f" DOCX to PDF conversion failed: {e}")
+            return None
+
+    def doc_to_images(file_path):
+        """ Converts DOCX to PDF and then to images. """
+        try:
+            pdf_file_path = convert_docx_to_pdf(file_path)
+            if not pdf_file_path:
+                raise HTTPException(status_code=500, detail="DOCX to PDF conversion failed")
+            
+            images = convert_pdf_to_images(pdf_file_path)
+            print(" Converted DOCX to images")
+            return images
         except Exception as e:
-            raise HTTPException(status_code=500, detail=f"DOCX to PDF conversion failed: {str(e)}")
+            raise HTTPException(status_code=500, detail=f"DOCX to images conversion failed: {str(e)}")
+
 
     async def process_images(file_path):
             print("processing images")

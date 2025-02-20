@@ -31,9 +31,6 @@ jobs:
       
       - name: Install dependencies
         run: pip install -r requirements.txt
-
-      - name: Make startup script executable
-        run: chmod +x startup.sh
         
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
 
@@ -71,4 +68,4 @@ jobs:
         with:
           app-name: 'Resume-Parser'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_56FAB915898D42819EB631B1733365CE }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_E1A3D805F2384B688CB9AEB6061F46A1 }}

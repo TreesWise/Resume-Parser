@@ -16,9 +16,13 @@ from spire.doc.common import *
 
 from spire.doc import Document
 
-# # Set global font path for Spire.Doc
-Document.SetGlobalFontPaths("/usr/share/fonts")
 
+font_path = "/usr/share/fonts"
+if os.path.exists(font_path):
+    print(f"✅ Font directory found: {font_path}")
+    Document.SetGlobalFontPaths(font_path)
+else:
+    print(f"❌ Warning: Font directory '{font_path}' not found. Skipping font path setting.")
 
 load_dotenv()
  

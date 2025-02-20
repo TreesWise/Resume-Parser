@@ -34,6 +34,7 @@ async def cv_json(file_path):
         - Merge multi-line entries into complete, single values.
         - Ensure `TEU` (container capacity) is numerical and `IMO` is a 7-digit number. If missing, set to `null`.
         - Ensure `Flag` values are valid country names (e.g., "Panama"), otherwise set to `null`.
+        - Extract the experience section first before processing other tables to avoid token loss.
          ### **Important:** Ensure **every experience entry** is captured fully, no matter how fragmented, and no entries are omitted. Return **only** the structured JSON output.
          - **Experience Table:**  It is *absolutely crucial* that *every single* experience entry is extracted, no matter how fragmented or poorly formatted it appears in the resume.  Do not omit any experience entries.  If an entry spans multiple lines, merge those lines to create a complete entry.  Double-check your output against the original resume to ensure no experience details are missing.
     - **Certificate Table:**

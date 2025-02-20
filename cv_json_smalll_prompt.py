@@ -13,20 +13,9 @@ from fastapi import HTTPException
 from spire.doc import *
 from spire.doc.common import *
 # from sample_json import json_template_str
-<<<<<<< HEAD
-from docx2pdf import convert
-=======
-
-from spire.doc import Document
 
 
-font_path = "/usr/share/fonts"
-if os.path.exists(font_path):
-    print(f"✅ Font directory found: {font_path}")
-    Document.SetGlobalFontPaths(font_path)
-else:
-    print(f"❌ Warning: Font directory '{font_path}' not found. Skipping font path setting.")
->>>>>>> 6ec325a9a11603fbaedb5c231f7e681fe720c6fb
+
 
 load_dotenv()
  

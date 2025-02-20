@@ -12,7 +12,8 @@ from dict_file import mapping_dict
 from fastapi import HTTPException
 from spire.doc import *
 from spire.doc.common import *
-from sample_json import json_template_str
+# from sample_json import json_template_str
+
 
 
 
@@ -24,8 +25,8 @@ async def cv_json(file_path):
  
     # # Load JSON template
     # json_template_path = r"D:\OneDrive - MariApps Marine Solutions Pte.Ltd\liju_resume_parser/output_json.json"
-    # with open(json_template_path, "r", encoding="utf-8") as file:
-    #     json_template_str = json.load(file)
+    with open("output_json.json", "r", encoding="utf-8") as file:
+        json_template_str = json.load(file)
     
     # Optimized Prompt
     prompt = f"""

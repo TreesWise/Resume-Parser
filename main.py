@@ -9,8 +9,8 @@ from spire.doc.common import *
  
 app = FastAPI()
 
-UPLOAD_DIR = "uploads"
-os.makedirs(UPLOAD_DIR, exist_ok=True)
+# UPLOAD_DIR = "uploads"
+# os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 # @app.post("/upload/")
 # async def upload_file(file: UploadFile = File(...)):
@@ -55,9 +55,10 @@ async def upload_file(file: UploadFile = File(...)):
         if not (filename.endswith(".pdf") or filename.endswith(".doc") or filename.endswith(".docx")):
             raise HTTPException(status_code=400, detail="Only PDF and Word documents are allowed")
 
-        file_path = os.path.join(UPLOAD_DIR, file.filename)
+        file_path = os.path.join(file.filename)
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
+        
         extracted_json = await cv_json(file_path)
 
         if not extracted_json:

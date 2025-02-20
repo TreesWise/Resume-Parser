@@ -10,8 +10,9 @@ from openai import OpenAI
 from io import BytesIO
 from dict_file import mapping_dict
 from fastapi import HTTPException
-from spire.doc import *
-from spire.doc.common import *
+# from spire.doc import *
+# from spire.doc.common import *
+from docx2pdf import convert
 # from sample_json import json_template_str
 
 

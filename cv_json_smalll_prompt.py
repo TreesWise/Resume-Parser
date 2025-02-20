@@ -17,7 +17,7 @@ from spire.doc.common import *
 from spire.doc import Document
 
 # # Set global font path for Spire.Doc
-# Document.SetGlobalFontPaths("/usr/share/fonts")
+Document.SetGlobalFontPaths("/usr/share/fonts")
 
 
 load_dotenv()

@@ -20,3 +20,5 @@ chmod +x "$PERSISTENT_PATH/$DEMO_SCRIPT"
 
 # Run demo.sh
 /bin/bash "$PERSISTENT_PATH/$DEMO_SCRIPT"
+# Start Uvicorn after setup
+gunicorn -w 4 -k uvicorn.workers.UvicornWorker main:app

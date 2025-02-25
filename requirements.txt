@@ -22,6 +22,7 @@ Elixir==0.7.1
 exceptiongroup==1.2.2
 fastapi==0.115.8
 frozenlist==1.5.0
+google-generativeai
 h11==0.14.0
 httpcore==1.0.7
 httpx==0.28.1

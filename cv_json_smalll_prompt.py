@@ -77,9 +77,7 @@ async def cv_json(file_path):
             response = model.generate_content([prompt, document])
 
             # Step 1: Remove the surrounding Markdown block syntax
-            cleaned_string = response.text.strip("
-json\n").strip("
-")
+            cleaned_string = response.text.strip("json\n").strip("")
 
             # Step 2: Replace single quotes with double quotes
             cleaned_string = cleaned_string.replace("'", '"')

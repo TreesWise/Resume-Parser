@@ -2,23 +2,34 @@
 
 # Define paths
 PERSISTENT_PATH="/home/site/wwwroot"
-DEMO_SCRIPT="demo.sh"
+DEMO_SCRIPT="$PERSISTENT_PATH/demo.sh"
 
 # Ensure the persistent directory exists
 mkdir -p $PERSISTENT_PATH
 
-# Find demo.sh dynamically inside /tmp/ (in case the temp folder name changes)
-TEMP_DEMO_PATH=$(find /tmp -type f -name "$DEMO_SCRIPT" 2>/dev/null | head -n 1)
+# Search for the demo.sh script in /tmp/ and move it to a persistent location
+if [ ! -f "$DEMO_SCRIPT" ]; then
+    echo "Looking for demo.sh in /tmp/..."
+    TEMP_DEMO_PATH=$(find /tmp -type f -name "demo.sh" 2>/dev/null | head -n 1)
 
-# If demo.sh is found in temp, move it to the persistent path
-if [ -n "$TEMP_DEMO_PATH" ]; then
-    cp "$TEMP_DEMO_PATH" "$PERSISTENT_PATH/$DEMO_SCRIPT"
+    if [ -n "$TEMP_DEMO_PATH" ]; then
+        echo "Copying demo.sh to persistent path: $PERSISTENT_PATH"
+        cp "$TEMP_DEMO_PATH" "$DEMO_SCRIPT"
+        chmod +x "$DEMO_SCRIPT"
+    else
+        echo "ERROR: demo.sh not found in /tmp/. Exiting."
+        exit 1
+    fi
 fi
 
-# Ensure demo.sh has execution permissions
-chmod +x "$PERSISTENT_PATH/$DEMO_SCRIPT"
+# Ensure requirements.txt exists before trying to install dependencies
+if [ -f "$PERSISTENT_PATH/requirements.txt" ]; then
+    echo "Installing dependencies..."
+    pip install -r "$PERSISTENT_PATH/requirements.txt" &
+else
+    echo "WARNING: requirements.txt not found, skipping dependency installation."
+fi
 
-# Run demo.sh
-/bin/bash "$PERSISTENT_PATH/$DEMO_SCRIPT"
-# Start Uvicorn after setup
+# Start Uvicorn using Gunicorn
+echo "Starting FastAPI application..."
 gunicorn -w 4 -k uvicorn.workers.UvicornWorker main:app

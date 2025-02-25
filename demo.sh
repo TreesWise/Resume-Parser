@@ -1,22 +1,18 @@
 #!/bin/bash
 
-# Define persistent path
 PERSISTENT_PATH="/home/site/wwwroot"
-DEMO_SCRIPT="demo.sh"
+SCRIPT_NAME="demo.sh"
 
-# Ensure the persistent directory exists
-mkdir -p $PERSISTENT_PATH
-
-# Find demo.sh dynamically inside /tmp/ (in case the temp folder name changes)
-TEMP_DEMO_PATH=$(find /tmp -type f -name "$DEMO_SCRIPT" 2>/dev/null | head -n 1)
-
-# If demo.sh is found in temp, move it to the persistent path
-if [ -n "$TEMP_DEMO_PATH" ]; then
-    mv "$TEMP_DEMO_PATH" "$PERSISTENT_PATH/$DEMO_SCRIPT"
+# If script is running from /tmp, move it to persistent storage
+if [[ "$0" == /tmp/* ]]; then
+    echo "Moving $SCRIPT_NAME to persistent storage..." 
+    cp "$0" "$PERSISTENT_PATH/$SCRIPT_NAME"
+    chmod +x "$PERSISTENT_PATH/$SCRIPT_NAME"
+    exec "$PERSISTENT_PATH/$SCRIPT_NAME" # Restart script from new location
+    exit  # Prevent further execution from /tmp
 fi
 
-# Ensure demo.sh has execution permissions
-chmod +x "$PERSISTENT_PATH/$DEMO_SCRIPT"
-
-# Run demo.sh
-/bin/bash "$PERSISTENT_PATH/$DEMO_SCRIPT"
+# Your actual installation & startup commands
+echo "Running demo.sh from persistent storage..."
+apt-get update && apt-get install -y libreoffice
+exec gunicorn -w 4 -k uvicorn.workers.UvicornWorker main:app
